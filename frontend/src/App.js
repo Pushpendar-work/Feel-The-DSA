@@ -193,15 +193,31 @@ function App() {
   };
 
   const CategoryTree = ({ node }) => {
+    const [isOpen, setIsOpen] = useState(false);
     if (!node) return null;
+    const hasChildren = node.children && node.children.length > 0;
     return (
       <div style={{ marginLeft: '20px', marginTop: '5px' }}>
-        <div style={{ cursor: 'pointer', fontWeight: 'bold', color: devMode ? '#0f0' : (theme === 'dark' ? '#aaa' : '#555') }}>
-          📁 {node.name}
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            cursor: hasChildren ? 'pointer' : 'default',
+            fontWeight: 'bold',
+            color: devMode ? '#0f0' : (theme === 'dark' ? '#aaa' : '#555'),
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px'
+          }}
+        >
+          {hasChildren ? (isOpen ? '▼' : '▶') : '•'} 📁 {node.name}
         </div>
-        {node.children && node.children.map((child, i) => (
-          <CategoryTree key={i} node={child} />
-        ))}
+        {isOpen && hasChildren && (
+          <div style={{ borderLeft: '1px solid #ccc', marginLeft: '5px' }}>
+            {node.children.map((child, i) => (
+              <CategoryTree key={i} node={child} />
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -317,6 +333,28 @@ function App() {
         <section style={{ padding: '10px', borderRight: '1px solid #ccc' }}>
           <h3 style={{ marginTop: 0 }}>Categories</h3>
           {categories ? <CategoryTree node={categories} /> : <p>Loading...</p>}
+          {devMode && (
+            <div style={{
+              marginTop: '10px',
+              backgroundColor: '#333',
+              color: '#0f0',
+              padding: '10px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              fontFamily: 'monospace'
+            }}>
+              <strong style={{ color: '#fff' }}>Hash Map (Catalog) State:</strong><br />
+              <div style={{ marginTop: '5px', maxHeight: '150px', overflowY: 'auto' }}>
+                {products.map((p) => (
+                  <div key={p.id} style={{ borderBottom: '1px solid #444', padding: '2px' }}>
+                    {p.id} ➔ {JSON.stringify(p)}
+                  </div>
+                ))}
+                {products.length === 0 && <div style={{color: '#888'}}>Empty</div>}
+              </div>
+              <small>Complexity: O(1) Average Lookup</small>
+            </div>
+          )}
           <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ccc' }} />
           <h3>Order Pipeline (Queue)</h3>
           <button onClick={processOrder} style={{ width: '100%', padding: '10px', cursor: 'pointer' }}>Process Next Order</button>
@@ -413,7 +451,30 @@ function App() {
               </li>
             ))}
           </ul>
-
+          {devMode && (
+            <div style={{
+              marginTop: '10px',
+              backgroundColor: '#333',
+              color: '#0f0',
+              padding: '10px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              fontFamily: 'monospace',
+              marginBottom: '20px'
+            }}>
+              <strong style={{ color: '#fff' }}>Dynamic Array (Cart) State:</strong><br />
+              <div style={{ display: 'flex', gap: '5px', marginTop: '5px', overflowX: 'auto' }}>
+                {cart.raw_structure.map((id, index) => (
+                  <div key={index} style={{ border: '1px solid #0f0', padding: '5px', minWidth: '40px', textAlign: 'center', background: '#222' }}>
+                    <small style={{ color: '#888', display: 'block' }}>idx {index}</small>
+                    {id}
+                  </div>
+                ))}
+                {cart.raw_structure.length === 0 && <div style={{color: '#888'}}>Empty</div>}
+              </div>
+              <small>Complexity: O(1) Access / O(1) Append</small>
+            </div>
+          )}
           {devMode && (
             <div style={{
               backgroundColor: '#333',
@@ -436,16 +497,13 @@ function App() {
               <small>Complexity: O(1) Push/Pop</small>
             </div>
           )}
-
           <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ccc' }} />
-
           <h3>Support System (Priority Queue)</h3>
           <div style={{ display: 'flex', gap: '5px' }}>
             <button onClick={() => createTicket(false)} style={{ flex: '1', cursor: 'pointer' }}>Regular</button>
             <button onClick={() => createTicket(true)} style={{ flex: '1', cursor: 'pointer', backgroundColor: '#ffd700' }}>VIP</button>
           </div>
           <button onClick={solveTicket} style={{ width: '100%', marginTop: '10px', padding: '10px', cursor: 'pointer', backgroundColor: '#28a745', color: '#fff', border: 'none' }}>Solve Highest Priority</button>
-
           {devMode && (
             <div style={{
               marginTop: '10px',
