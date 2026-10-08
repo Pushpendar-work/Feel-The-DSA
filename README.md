@@ -1,4 +1,4 @@
-# 🛒 DSA STORE - Feel the DSA by Pushpendar
+# 🛒 DSA STORE - Feel the DSA --by Pushpendar
 
 A full-stack e-commerce application designed as a living laboratory for learning Data Structures and Algorithms (DSA). Instead of reading theory, you can interact with a real store where every feature is powered by a specific data structure.
 
